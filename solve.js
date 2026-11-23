@@ -16,42 +16,16 @@ const ESC_RE = /[&<>"']/;
 function escHtml(v) {
   if (typeof v === 'string') {
     if (!ESC_RE.test(v)) return v;
-    let out = '';
-    let start = 0;
-    for (let i = 0; i < v.length; i++) {
-      const c = v[i];
-      let e;
-      if (c === '&') e = '&amp;';
-      else if (c === '<') e = '&lt;';
-      else if (c === '>') e = '&gt;';
-      else if (c === '"') e = '&quot;';
-      else if (c === "'") e = '&#39;';
-      else continue;
-      out += v.slice(start, i) + e;
-      start = i + 1;
-    }
-    return out + v.slice(start);
+    return v.replace(ESC_RE_G, c => ESC_MAP[c]);
   }
   return escapeHtml(textOf(v));
 }
 
+const ESC_MAP = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+const ESC_RE_G = /[&<>"']/g;
 function escapeHtml(s) {
   if (!ESC_RE.test(s)) return s;
-  let out = '';
-  let start = 0;
-  for (let i = 0; i < s.length; i++) {
-    const c = s[i];
-    let e;
-    if (c === '&') e = '&amp;';
-    else if (c === '<') e = '&lt;';
-    else if (c === '>') e = '&gt;';
-    else if (c === '"') e = '&quot;';
-    else if (c === "'") e = '&#39;';
-    else continue;
-    out += s.slice(start, i) + e;
-    start = i + 1;
-  }
-  return out + s.slice(start);
+  return s.replace(ESC_RE_G, c => ESC_MAP[c]);
 }
 
 function longDate(date) {
